@@ -1,0 +1,38 @@
+name: Integration Continue
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  mainRouter:
+    runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+        image: mariadb:latest
+        env:
+          MARIADB_ROOT_PASSWORD: toor
+          MARIADB_DATABASE: test
+          MARIADB_USER: test
+          MARIADB_PASSWORD: test
+        ports:
+          - 3306
+        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    env:
+      DB_NAME: test
+      DB_USER: test
+      DB_PASS: test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+      - name: Install Dependencies
+        run: npm ci
+      - name: Run Main Test
+        run: npm run test:file main
