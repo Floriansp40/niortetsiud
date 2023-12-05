@@ -1,0 +1,14 @@
+name: Deploiement
+
+on:
+  workflow_call
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Chouckout
+        uses: actions/checkout@v3
+      - name: Run Joke
+        run: echo joke
